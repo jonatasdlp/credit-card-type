@@ -5,10 +5,9 @@ var VISA = 'visa';
 var MASTERCARD = 'master-card';
 var AMERICAN_EXPRESS = 'american-express';
 var DINERS_CLUB = 'diners-club';
-var DISCOVER = 'discover';
-var JCB = 'jcb';
 var UNIONPAY = 'unionpay';
-var MAESTRO = 'maestro';
+var HIPERCARD = 'hipercard';
+var ELO = 'elo';
 var CVV = 'CVV';
 var CID = 'CID';
 var CVC = 'CVC';
@@ -18,16 +17,17 @@ var testOrder = [
   MASTERCARD,
   AMERICAN_EXPRESS,
   DINERS_CLUB,
-  DISCOVER,
-  JCB,
   UNIONPAY,
-  MAESTRO
+  HIPERCARD,
+  ELO
 ];
 
 function clone(originalObject) {
   var dupe;
 
-  if (!originalObject) { return null; }
+  if (!originalObject) {
+    return null;
+  }
 
   dupe = JSON.parse(JSON.stringify(originalObject));
   delete dupe.prefixPattern;
@@ -39,8 +39,8 @@ function clone(originalObject) {
 types[VISA] = {
   niceType: 'Visa',
   type: VISA,
-  prefixPattern: /^4$/,
-  exactPattern: /^4\d*$/,
+  prefixPattern: /^4(?!38935|011|51416|576)\d{12}(?:\d{3})?$/,
+  exactPattern: /^4(?!38935|011|51416|576)\d{12}(?:\d{3})?$/,
   gaps: [4, 8, 12],
   lengths: [16, 18, 19],
   code: {
@@ -89,36 +89,10 @@ types[DINERS_CLUB] = {
   }
 };
 
-types[DISCOVER] = {
-  niceType: 'Discover',
-  type: DISCOVER,
-  prefixPattern: /^(6|60|601|6011|65|64|64[4-9])$/,
-  exactPattern: /^(6011|65|64[4-9])\d*$/,
-  gaps: [4, 8, 12],
-  lengths: [16, 19],
-  code: {
-    name: CID,
-    size: 3
-  }
-};
-
-types[JCB] = {
-  niceType: 'JCB',
-  type: JCB,
-  prefixPattern: /^(2|21|213|2131|1|18|180|1800|3|35)$/,
-  exactPattern: /^(2131|1800|35)\d*$/,
-  gaps: [4, 8, 12],
-  lengths: [16, 17, 18, 19],
-  code: {
-    name: CVV,
-    size: 3
-  }
-};
-
 types[UNIONPAY] = {
   niceType: 'UnionPay',
   type: UNIONPAY,
-  prefixPattern: /^((6|62|62\d|(621(?!83|88|98|99))|622(?!06)|627[02,06,07]|628(?!0|1)|629[1,2])|622018)$/,
+  prefixPattern: /^(((620|(621(?!83|88|98|99))|622(?!06|018)|62[3-6]|627[02,06,07]|628(?!0|1)|629[1,2]))\d*|622018\d{12})$/,
   exactPattern: /^(((620|(621(?!83|88|98|99))|622(?!06|018)|62[3-6]|627[02,06,07]|628(?!0|1)|629[1,2]))\d*|622018\d{12})$/,
   gaps: [4, 8, 12],
   lengths: [16, 17, 18, 19],
@@ -128,13 +102,26 @@ types[UNIONPAY] = {
   }
 };
 
-types[MAESTRO] = {
-  niceType: 'Maestro',
-  type: MAESTRO,
-  prefixPattern: /^(5|5[06-9]|6\d*)$/,
-  exactPattern: /^(5[06-9]|6[37])\d*$/,
+types[HIPERCARD] = {
+  niceType: 'Hipercard',
+  type: HIPERCARD,
+  prefixPattern: /^(38|60)\d{11}(?:\d{3})?(?:\d{3})?$/,
+  exactPattern: /^(38|60)\d{11}(?:\d{3})?(?:\d{3})?$/,
   gaps: [4, 8, 12],
-  lengths: [12, 13, 14, 15, 16, 17, 18, 19],
+  lengths: [16],
+  code: {
+    name: CVC,
+    size: 3
+  }
+};
+
+types[ELO] = {
+  niceType: 'Elo',
+  type: ELO,
+  prefixPattern: /^[456](?:011|38935|51416|576|04175|067|06699|36368|36297)\d{10}(?:\d{2})?$/,
+  exactPattern: /^(40117[8-9]|431274|438935|451416|457393|45763[1-2]|506(699|7[0-6][0-9]|77[0-8])|509\d{3}|504175|627780|636297|636368|65003[1-3]|6500(3[5-9]|4[0-9]|5[0-1])|6504(0[5-9]|[1-3][0-9])|650(4[8-9][0-9]|5[0-2][0-9]|53[0-8])|6505(4[1-9]|[5-8][0-9]|9[0-8])|6507(0[0-9]|1[0-8])|65072[0-7]|6509(0[1-9]|1[0-9]|20)|6516(5[2-9]|[6-7][0-9])|6550([0-1][0-9]|2[1-9]|[3-4][0-9]|5[0-8]))$/,
+  gaps: [4, 6, 12],
+  lengths: [16],
   code: {
     name: CVC,
     size: 3
@@ -178,10 +165,9 @@ creditCardType.types = {
   MASTERCARD: MASTERCARD,
   AMERICAN_EXPRESS: AMERICAN_EXPRESS,
   DINERS_CLUB: DINERS_CLUB,
-  DISCOVER: DISCOVER,
-  JCB: JCB,
   UNIONPAY: UNIONPAY,
-  MAESTRO: MAESTRO
+  HIPERCARD: HIPERCARD,
+  ELO: ELO
 };
 
 module.exports = creditCardType;

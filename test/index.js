@@ -17,15 +17,12 @@ describe('creditCardType', function () {
 
   describe('matches card numbers to brand', function () {
     var tests = [
-      ['4', 'visa'],
-      ['411', 'visa'],
       ['4111111111111111', 'visa'],
       ['4012888888881881', 'visa'],
       ['4222222222222', 'visa'],
       ['4462030000000000', 'visa'],
       ['4484070000000000', 'visa'],
-      ['411111111111111111', 'visa'],
-      ['4111111111111111110', 'visa'],
+      ['4444444444444447', 'visa'],
 
       ['2221', 'master-card'],
       ['2222', 'master-card'],
@@ -71,45 +68,8 @@ describe('creditCardType', function () {
       ['36700102000000', 'diners-club'],
       ['36148900647913', 'diners-club'],
 
-      ['6011', 'discover'],
-      ['644', 'discover'],
-      ['65', 'discover'],
-      ['644', 'discover'],
-      ['645', 'discover'],
-      ['646', 'discover'],
-      ['647', 'discover'],
-      ['648', 'discover'],
-      ['649', 'discover'],
-      ['6011000400000000', 'discover'],
-      ['6011111111111117', 'discover'],
-      ['6011000990139424', 'discover'],
-
       ['6221258812340000', 'unionpay'],
       ['622018111111111111', 'unionpay'],
-
-      ['50', 'maestro'],
-      ['56', 'maestro'],
-      ['57', 'maestro'],
-      ['58', 'maestro'],
-      ['59', 'maestro'],
-      ['63', 'maestro'],
-      ['67', 'maestro'],
-      ['6304000000000000', 'maestro'],
-      ['6799990100000000019', 'maestro'],
-      ['6220181111111111111', 'maestro'],
-      ['62183', 'maestro'],
-
-      ['1', 'jcb'],
-      ['35', 'jcb'],
-      ['2131', 'jcb'],
-      ['21312', 'jcb'],
-      ['1800', 'jcb'],
-      ['18002', 'jcb'],
-      ['3530111333300000', 'jcb'],
-      ['3566002020360505', 'jcb'],
-      ['35308796121637357', 'jcb'],
-      ['353445444300732639', 'jcb'],
-      ['3537286818376838569', 'jcb'],
 
       ['6221260000000000', 'unionpay'],
       ['6221260000000000000', 'unionpay'],
@@ -124,7 +84,16 @@ describe('creditCardType', function () {
       ['6221558812340000', 'unionpay'],
       ['6269992058134322', 'unionpay'],
       ['622018111111111111', 'unionpay'],
-      ['6220181111111111111', 'maestro']
+
+      ['4389353253466243', 'elo'],
+      ['6362973368347081', 'elo'],
+      ['6363681716177949', 'elo'],
+      ['4514169029930652', 'elo'],
+      ['5041754777292717', 'elo'],
+      ['5041754517302198', 'elo'],
+
+      ['6062827591580327', 'hipercard'],
+      ['6062829187690437', 'hipercard']
     ];
 
     tests.forEach(function (test) {
@@ -142,16 +111,7 @@ describe('creditCardType', function () {
 
   describe('ambiguous card types', function () {
     var ambiguous = [
-      ['', ['visa', 'master-card', 'american-express', 'diners-club', 'discover', 'jcb', 'unionpay', 'maestro']],
-      ['2', ['master-card', 'jcb']],
-      ['3', ['american-express', 'diners-club', 'jcb']],
-      ['5', ['master-card', 'maestro']],
-      ['6', ['discover', 'maestro', 'unionpay']],
-      ['60', ['discover', 'maestro']],
-      ['601', ['discover', 'maestro']],
-      ['64', ['discover', 'maestro']],
-      ['62', ['unionpay', 'maestro']],
-      ['627', ['unionpay', 'maestro']]
+      ['3', ['american-express', 'diners-club']]
     ];
 
     ambiguous.forEach(function (group) {
@@ -218,20 +178,6 @@ describe('creditCardType', function () {
       expect(code.name).to.equal('CID');
     });
 
-    it('Discover', function () {
-      var code = creditCardType('6011000990139424')[0].code;
-
-      expect(code.size).to.equal(3);
-      expect(code.name).to.equal('CID');
-    });
-
-    it('JCB', function () {
-      var code = creditCardType('30569309025904')[0].code;
-
-      expect(code.size).to.equal(3);
-      expect(code.name).to.equal('CVV');
-    });
-
     it('Diners Club', function () {
       var code = creditCardType('30569309025904')[0].code;
 
@@ -245,33 +191,14 @@ describe('creditCardType', function () {
       expect(code.size).to.equal(3);
       expect(code.name).to.equal('CVN');
     });
-
-    it('Maestro', function () {
-      var code = creditCardType('6304000000000000')[0].code;
-
-      expect(code.size).to.equal(3);
-      expect(code.name).to.equal('CVC');
-    });
   });
 
   describe('returns lengths for', function () {
-    it('Maestro', function () {
-      expect(creditCardType('6304000000000000')[0].lengths).to.deep.equal([12, 13, 14, 15, 16, 17, 18, 19]);
-    });
     it('Diners Club', function () {
       expect(creditCardType('305')[0].lengths).to.deep.equal([14, 16, 19]);
     });
-    it('Discover', function () {
-      expect(creditCardType('6011')[0].lengths).to.deep.equal([16, 19]);
-    });
-    it('Visa', function () {
-      expect(creditCardType('4')[0].lengths).to.deep.equal([16, 18, 19]);
-    });
     it('Mastercard', function () {
       expect(creditCardType('54')[0].lengths).to.deep.equal([16]);
-    });
-    it('JCB', function () {
-      expect(creditCardType('35')[0].lengths).to.deep.equal([16, 17, 18, 19]);
     });
   });
 
